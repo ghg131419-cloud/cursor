@@ -293,68 +293,61 @@ def main():
     wb = Workbook()
     ws = wb.active
     ws.title = "01-汇报摘要"
-    ws["A1"] = "天猫近3个月利润分析 · 干净汇报版"
+    ws["A1"] = "天猫利润分析 · 领导一页纸"
     ws["A1"].font = tfont
-    ws["A2"] = "主口径：ID周损益 · 净利润(推广后)｜周次：5.11–8.2（9个已校验单周）｜单位：元"
-    ws["A2"].font = bfont
-    ws["A3"] = "店铺周报仅作附录对照，不与ID成交金额直接混比"
-    ws["A3"].font = Font(name="微软雅黑", size=10, color="C00000")
+    ws["A2"] = "口径：ID周损益｜推广后净利润｜5.11–8.2"
+    ws["A2"].font = Font(name="微软雅黑", size=10, color="666666")
+    ws["A4"] = "一句话"
+    ws["A4"].font = sfont
+    ws["A5"] = "亏在大链接：量掉的时候利润掉，量回来时又被推广费吃掉；大大包不是主因。"
+    ws["A5"].font = Font(bold=True, name="微软雅黑", size=12, color="C00000")
+    ws["A5"].alignment = Alignment(wrap_text=True, vertical="center")
+    ws.row_dimensions[5].height = 28
 
-    ws["A5"] = "一、核心结论"
-    ws["A5"].font = sfont
+    ws["A7"] = "核心结论"
+    ws["A7"].font = sfont
     conclusions = [
-        (
-            "结论1",
-            f"最好周为 7.6-7.12（推广后 {t_best['推广后利润']:,.0f}）。之后两周回落：7.13 {t_713['推广后利润']:,.0f}（{t_713['环比_推广后']:+,.0f}），7.20 {t_720['推广后利润']:,.0f}（{t_720['环比_推广后']:+,.0f}）。",
-        ),
+        ("结论1", "近三个月一直在亏；最好一周是7.6（约-4100），之后又往下掉。"),
         (
             "结论2",
-            f"7.6→7.13 主因是推广前利润下降（随成交回落）。拖累TOP3：{top3.iloc[0]['商品ID']} {top3.iloc[0]['定位']}（{top3.iloc[0]['推广后变化']:+.0f}）、{top3.iloc[1]['商品ID']} {top3.iloc[1]['定位']}（{top3.iloc[1]['推广后变化']:+.0f}）、{top3.iloc[2]['商品ID']} {top3.iloc[2]['定位']}（{top3.iloc[2]['推广后变化']:+.0f}）。",
+            "这波回落不是大大包的问题，主责在大链接：先是袋面主链销量掉，后是袋面次链推广加太猛。",
         ),
         (
             "结论3",
-            f"7.13→7.20 更突出推广费上升。恶化最大：{drag2.iloc[0]['商品ID']} {drag2.iloc[0]['定位']}（推广后 {drag2.iloc[0]['推广后变化']:+.0f}，推广费 {drag2.iloc[0]['推广费变化']:+.0f}）。",
+            "结构上，袋面主/次链 + 杯面主链长期贡献大部分亏损；巴东新链接也在持续失血。",
         ),
         (
             "结论4",
-            "每周绝对亏损长期集中在袋面次链接、袋面主链接、杯面主链接；巴东牛肉等新链接持续大额亏损。",
-        ),
-        (
-            "结论5",
-            "原味大大包：推广前有利润，但推广后净贡献弱，不是近周回落第一责任。",
-        ),
-        (
-            "结论6",
-            f"5.11→7.27 整段：成交 {t0['成交金额']:,.0f}→{t_727['成交金额']:,.0f}（{(t_727['成交金额']/t0['成交金额']-1)*100:+.1f}%），推广后 {t0['推广后利润']:,.0f}→{t_727['推广后利润']:,.0f}（亏损略收窄）。不是“整段量增利降”。",
+            "要抓三件事：控主链投产、砍低效推广、巴东减投验证；大大包只控推广侵蚀即可。",
         ),
     ]
-    ws["A6"] = "序号"
-    ws["B6"] = "内容"
-    style_header_row(ws, 6, 2, hf, hfont, thin)
-    for i, (a, b) in enumerate(conclusions, 7):
+    ws["A8"] = "序号"
+    ws["B8"] = "结论"
+    style_header_row(ws, 8, 2, hf, hfont, thin)
+    for i, (a, b) in enumerate(conclusions, 9):
         ws.cell(i, 1, a).font = bfont
         ws.cell(i, 1).border = thin
         cell = ws.cell(i, 2, b)
         cell.font = bfont
         cell.border = thin
         cell.alignment = Alignment(wrap_text=True, vertical="center")
-        ws.row_dimensions[i].height = 38
-    ws.column_dimensions["A"].width = 10
-    ws.column_dimensions["B"].width = 110
+        ws.row_dimensions[i].height = 32
+    ws.column_dimensions["A"].width = 12
+    ws.column_dimensions["B"].width = 88
 
-    ws["A14"] = "二、建议"
+    ws["A14"] = "请拍板"
     ws["A14"].font = sfont
     advices = [
-        "1. 优先复盘袋面主链接成交与推广前利润下滑（阶段一）。",
-        "2. 压降袋面次链接、30包等低效推广（阶段二）。",
-        "3. 巴东牛肉单独评估减投/停投。",
-        "4. 大大包保留推广前利润，严控推广侵蚀。",
+        "① 立刻复盘袋面主链接：成交为何掉、推广前利润为何掉。",
+        "② 压降袋面次链接、30包等低效花费，先把费率打下来。",
+        "③ 巴东链接减投/停投一周看结果。",
+        "④ 大大包保留自然利润，严控加投。",
     ]
     for i, t in enumerate(advices, 15):
         ws.cell(i, 1, t).font = bfont
 
-    ws["A20"] = "三、ID周合计趋势（主表）"
-    ws["A20"].font = sfont
+    ws["A20"] = "附表：ID周合计（备查）"
+    ws["A20"].font = Font(name="微软雅黑", size=10, color="666666")
     sum_tbl = tot.reset_index()[
         [
             "周次",
